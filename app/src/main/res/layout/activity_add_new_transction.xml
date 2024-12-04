@@ -193,7 +193,7 @@
                 android:id="@+id/descEdtTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Electricity Bill"
+                android:hint="@string/electricity_bill"
                 android:padding="6dp"
                 android:background="@color/white"
                 android:textSize="16sp"

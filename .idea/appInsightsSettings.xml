@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.flobiz_task" />
+                  <option name="mobileSdkAppId" value="1:912336442407:android:7e960b45421dd5ecc4aa02" />
+                  <option name="projectId" value="flobiztask" />
+                  <option name="projectNumber" value="912336442407" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
