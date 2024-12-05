@@ -13,7 +13,7 @@
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/searchbar_background"
@@ -39,15 +39,15 @@
             android:layout_marginTop="6dp"
             android:fontFamily="sans-serif-medium"
             android:text="@string/recent_transactions"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            android:textSize="16sp"
+            />
 
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
-            android:layout_margin="8dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
             android:background="@color/colorRecyler"
             android:clipToPadding="false"
             android:padding="12dp"
@@ -62,8 +62,8 @@
         android:layout_above="@+id/custom_bottom_nav"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="14dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/colorPrimary"
         android:paddingStart="30dp"
@@ -71,7 +71,7 @@
         android:text="@string/add_new"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
 
 
     <LinearLayout

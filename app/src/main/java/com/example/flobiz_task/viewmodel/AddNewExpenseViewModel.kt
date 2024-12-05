@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flobiz_task.model.data.Expense
-import com.example.flobiz_task.model.repository.AddNewExpenseRepository
+import com.example.flobiz_task.model.repository.ExpenseRepository
 import kotlinx.coroutines.launch
 
-class AddNewExpenseViewModel(private val repository: AddNewExpenseRepository): ViewModel() {
+class AddNewExpenseViewModel(private val repository: ExpenseRepository): ViewModel() {
 
     private val _uploadResult = MutableLiveData<Boolean>()
     val uploadResult: LiveData<Boolean> get() = _uploadResult
@@ -19,6 +19,9 @@ class AddNewExpenseViewModel(private val repository: AddNewExpenseRepository): V
             _uploadResult.postValue(result)
         }
     }
+
+
+
 
 
 }

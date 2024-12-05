@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityAddNewTransctionBinding
 import com.example.flobiz_task.model.data.Expense
-import com.example.flobiz_task.model.repository.AddNewExpenseRepository
+import com.example.flobiz_task.model.repository.ExpenseRepository
 import com.example.flobiz_task.viewmodel.AddNewExpenseViewModel
 import com.example.flobiz_task.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -32,7 +32,7 @@ class AddNewTransctionActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
 
-        viewModel = ViewModelProvider(this, ExpenseViewModelFactory(AddNewExpenseRepository())).get(
+        viewModel = ViewModelProvider(this, ExpenseViewModelFactory(ExpenseRepository())).get(
             AddNewExpenseViewModel::class.java
         )
 

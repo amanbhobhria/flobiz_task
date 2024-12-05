@@ -5,56 +5,34 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityMainBinding
+import com.example.flobiz_task.model.repository.ExpenseRepository
+import com.example.flobiz_task.viewmodel.GetExpenseViewModel
+import com.example.flobiz_task.viewmodel.GetExpenseViewModelFactory
 import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binidng:ActivityMainBinding
+    private lateinit var binding:ActivityMainBinding
+    private lateinit var expenseAdapter:GetExpenseAdapter
+    private lateinit var viewModel: GetExpenseViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binidng = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binidng.root)
-
-
-//        // Initialize Firebase Realtime Database
-//        val database = FirebaseDatabase.getInstance()
-//        val dbReference = database.reference
-//
-//        // Dummy data to upload
-//        val dummyData = mapOf(
-//            "name" to "John Doe",
-//            "age" to 25,
-//            "city" to "New York"
-//        )
-//
-//        // Write data to Firebase
-//        dbReference.child("users").child("user1").setValue(dummyData)
-//            .addOnSuccessListener {
-//                // Data uploaded successfully
-//                Log.d("Firebase", "Data uploaded successfully")
-//            }
-//            .addOnFailureListener { exception ->
-//                // Handle error
-//                Log.e("Firebase", "Error uploading data", exception)
-//            }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
 
 
+        viewModel = ViewModelProvider(this, GetExpenseViewModelFactory(ExpenseRepository()))[ GetExpenseViewModel::class.java]
 
-        binidng.addNewBtn.setOnClickListener{
-            val intent = Intent(this, AddNewTransctionActivity::class.java)
-            startActivity(intent)
-        }
 
-        binidng.menuSettings.setOnClickListener {
-            val intent = Intent(this, ExpenseDetailActivity::class.java)
-            startActivity(intent)
-        }
 
 
 
@@ -62,6 +40,49 @@ class MainActivity : AppCompatActivity() {
 
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
+        binding.addNewBtn.setOnClickListener{
+            val intent = Intent(this, AddNewTransctionActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.menuSettings.setOnClickListener {
+            val intent = Intent(this, ExpenseDetailActivity::class.java)
+            startActivity(intent)
+        }
+
+        setupRecyclerView()
+        setupViewModel()
+        observeData()
+
+
+
 
     }
+
+
+    private fun setupRecyclerView() {
+        expenseAdapter = GetExpenseAdapter()
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = expenseAdapter
+        }
+    }
+
+    private fun setupViewModel() {
+        val factory = GetExpenseViewModelFactory(ExpenseRepository())
+        viewModel = ViewModelProvider(this, factory).get(GetExpenseViewModel::class.java)
+        viewModel.fetchExpenses()
+    }
+
+    private fun observeData() {
+        viewModel.expenseList.observe(this) { expenses ->
+            if (expenses.isNotEmpty()) {
+                expenseAdapter.submitList(expenses)
+            } else {
+                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
 }
