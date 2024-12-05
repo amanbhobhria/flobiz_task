@@ -32,9 +32,13 @@ class AddNewTransctionActivity : AppCompatActivity() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
 
+
         viewModel = ViewModelProvider(this, ExpenseViewModelFactory(ExpenseRepository())).get(
             AddNewExpenseViewModel::class.java
         )
+
+        viewModel.initializeCounters()
+
 
 
         // Setup listeners and observers
@@ -85,16 +89,9 @@ class AddNewTransctionActivity : AppCompatActivity() {
             return
         }
 
-        // Create an expense object
-        val expense = Expense(
-            expenseType = expenseType,
-            date = date,
-            description = description,
-            amount = amount
-        )
 
-        // Upload expense via ViewModel
-        viewModel.uploadExpense(expense)
+              // Upload expense via ViewModel
+        viewModel.uploadExpense(expenseType, date, description, amount)
 
         // Observe the result of upload
         viewModel.uploadResult.observe(this) { isSuccess ->

@@ -18,8 +18,7 @@ private val databaseReference = FirebaseDatabase.getInstance().getReference("exp
 // Function to upload data to Firebase
 suspend fun uploadExpense(expense: Expense): Boolean {
     return try {
-        val key = databaseReference.push().key ?: throw Exception("Unable to generate key")
-        databaseReference.child(key).setValue(expense).await()
+        databaseReference.child(expense.id).setValue(expense).await()
         true
     } catch (e: Exception) {
         false

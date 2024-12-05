@@ -61,7 +61,18 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun setupRecyclerView() {
-        expenseAdapter = GetExpenseAdapter()
+        expenseAdapter = GetExpenseAdapter{ expense ->
+            val intent = Intent(this, ExpenseDetailActivity::class.java).apply {
+                putExtra("expenseId", expense.id)
+                putExtra("date", expense.date)
+                putExtra("description", expense.description)
+                putExtra("amount", expense.amount)
+//                putExtra("id", expense)
+
+            }
+            startActivity(intent)
+        }
+
         binding.recyclerView.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = expenseAdapter
@@ -78,6 +89,10 @@ class MainActivity : AppCompatActivity() {
         viewModel.expenseList.observe(this) { expenses ->
             if (expenses.isNotEmpty()) {
                 expenseAdapter.submitList(expenses)
+
+
+
+                Log.d("MainActivity", "Expenses: ${expenses.size}")
             } else {
                 Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show()
             }
