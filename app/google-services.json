@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "912336442407",
+    "project_id": "flobiztask",
+    "storage_bucket": "flobiztask.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:912336442407:android:7e960b45421dd5ecc4aa02",
+        "android_client_info": {
+          "package_name": "com.example.flobiz_task"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWPoXsGpapo9gSmqM-Aq9i7pJXMC6SZy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
