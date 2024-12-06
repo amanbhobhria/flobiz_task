@@ -2,6 +2,7 @@ package com.example.flobiz_task.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -9,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityExpenseDetailBinding
 import com.example.flobiz_task.model.data.Expense
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class ExpenseDetailActivity : AppCompatActivity() {
@@ -26,12 +28,17 @@ class ExpenseDetailActivity : AppCompatActivity() {
 
         // Retrieve passed expense details from intent
         expenseId = intent.getStringExtra("expenseId")
+        Log.d("expenseDetail", "Expense ID: $expenseId")
         val date = intent.getStringExtra("date") ?: ""
+        val expenseType = intent.getStringExtra("expenseType") ?: ""
         val description = intent.getStringExtra("description") ?: ""
         val amount = intent.getStringExtra("amount") ?: ""
 
+
+
+
         // Set initial data
-        binding.expenseTypeTxt.setText(expenseId)
+        binding.expenseTypeTxt.text = expenseType
         binding.dateEdtTxt.setText(date)
         binding.descEdtTxt.setText(description)
         binding.amountEdtTxt.setText(amount)
@@ -43,18 +50,42 @@ class ExpenseDetailActivity : AppCompatActivity() {
         binding.editBtn.setOnClickListener { toggleEditable(true) }
         binding.saveBtn.setOnClickListener { updateExpense() }
         binding.deleteBtn.setOnClickListener { confirmDeletion() }
+        binding.backIcon.setOnClickListener{
+            finish()
+        }
     }
 
     private fun toggleEditable(editable: Boolean) {
         isEditable = editable
-        binding.expenseTypeTxt.isEnabled = false // Expense type should not be editable
-        binding.dateEdtTxt.isEnabled = editable
-        binding.descEdtTxt.isEnabled = editable
-        binding.amountEdtTxt.isEnabled = editable
+
+        Log.d("expenseDetail", "editable: $editable")
+        binding.dateEdtTxt.isEnabled = isEditable
+        binding.dateEdtTxt.isFocusable = isEditable
+        binding.dateEdtTxt.isFocusableInTouchMode = isEditable
+
+        binding.descEdtTxt.isEnabled = isEditable
+        binding.descEdtTxt.isFocusable = isEditable
+        binding.descEdtTxt.isFocusableInTouchMode = isEditable
+
+        binding.amountEdtTxt.isEnabled = isEditable
+        binding.amountEdtTxt.isFocusable = isEditable
+        binding.amountEdtTxt.isFocusableInTouchMode = isEditable
+
+
+
+
+
         if (editable) {
+            Log.d("expenseDetail",isEditable.toString())
+
+
             binding.editBtn.visibility = View.GONE
             binding.saveBtn.visibility = View.VISIBLE
         } else {
+            Log.d("expenseDetail",editable.toString())
+            binding.dateEdtTxt.isEnabled = isEditable
+            binding.descEdtTxt.isEnabled = isEditable
+            binding.amountEdtTxt.isEnabled = isEditable
             binding.editBtn.visibility = View.VISIBLE
             binding.saveBtn.visibility = View.GONE
         }
@@ -67,13 +98,14 @@ class ExpenseDetailActivity : AppCompatActivity() {
         }
 
         val updatedExpense = Expense(
-            id = expenseId!!,
+            id = expenseId.toString(),
             expenseType = binding.expenseTypeTxt.text.toString(),
             date = binding.dateEdtTxt.text.toString(),
             description = binding.descEdtTxt.text.toString(),
             amount = binding.amountEdtTxt.text.toString()
         )
 
+        Log.d("expenseDetail", "in Update Expense ID: $expenseId")
         val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
         databaseReference.child(expenseId!!).setValue(updatedExpense)
             .addOnSuccessListener {
@@ -103,6 +135,7 @@ class ExpenseDetailActivity : AppCompatActivity() {
         val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
         databaseReference.child(expenseId!!).removeValue()
             .addOnSuccessListener {
+
                 Toast.makeText(this, "Expense deleted successfully!", Toast.LENGTH_SHORT).show()
                 finish() // Close the activity after deletion
             }
@@ -110,4 +143,10 @@ class ExpenseDetailActivity : AppCompatActivity() {
                 Toast.makeText(this, "Failed to delete expense!", Toast.LENGTH_SHORT).show()
             }
     }
+
+
+
+
+
+
 }

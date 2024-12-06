@@ -57,6 +57,7 @@ class AddNewTransctionActivity : AppCompatActivity() {
 
             saveExpense()
         }
+
     }
 
 

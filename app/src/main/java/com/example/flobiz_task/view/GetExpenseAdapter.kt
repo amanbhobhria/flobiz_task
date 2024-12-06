@@ -24,7 +24,7 @@ class GetExpenseAdapter(private val onItemClick: (Expense) -> Unit)
 
     class ExpenseViewHolder(private val binding: TransctionItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(expense: Expense) {
-            binding.expenseId.text = expense.id
+            binding.expenseId.text = expense.expenseType
             binding.expenseDate.text = expense.date
             binding.expenseDescription.text = expense.description
             binding.expenseAmount.text = expense.amount

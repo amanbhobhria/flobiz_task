@@ -15,15 +15,23 @@ class ExpenseRepository {
 
 private val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
 
-// Function to upload data to Firebase
-suspend fun uploadExpense(expense: Expense): Boolean {
-    return try {
-        databaseReference.child(expense.id).setValue(expense).await()
-        true
-    } catch (e: Exception) {
-        false
+
+
+
+
+    suspend fun uploadExpense(expense: Expense): Boolean {
+        return try {
+
+
+            val key = databaseReference.push().key ?: throw Exception("Unable to generate key")
+            expense.id = key
+            databaseReference.child(key).setValue(expense).await()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
-}
+
 
 
     fun getExpenses(callback: (List<Expense>) -> Unit) {
