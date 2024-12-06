@@ -1,22 +1,25 @@
 package com.example.flobiz_task.view
 
-import androidx.appcompat.app.AppCompatActivity
+
+
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityExpenseDetailBinding
 import com.example.flobiz_task.model.data.Expense
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.example.flobiz_task.viewmodel.ExpenseDetailViewModel
 
 class ExpenseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityExpenseDetailBinding
-    private var expenseId: String? = null // Unique ID of the expense (e.g., expense1, income1)
-    private var isEditable = false
+    private val viewModel: ExpenseDetailViewModel by viewModels()
+
+    private var expenseId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,14 +31,10 @@ class ExpenseDetailActivity : AppCompatActivity() {
 
         // Retrieve passed expense details from intent
         expenseId = intent.getStringExtra("expenseId")
-        Log.d("expenseDetail", "Expense ID: $expenseId")
         val date = intent.getStringExtra("date") ?: ""
         val expenseType = intent.getStringExtra("expenseType") ?: ""
         val description = intent.getStringExtra("description") ?: ""
         val amount = intent.getStringExtra("amount") ?: ""
-
-
-
 
         // Set initial data
         binding.expenseTypeTxt.text = expenseType
@@ -43,110 +42,69 @@ class ExpenseDetailActivity : AppCompatActivity() {
         binding.descEdtTxt.setText(description)
         binding.amountEdtTxt.setText(amount)
 
-        // Make fields non-editable initially
-        toggleEditable(false)
+        // Observe ViewModel state
+        observeViewModel()
 
         // Set up button listeners
-        binding.editBtn.setOnClickListener { toggleEditable(true) }
-        binding.saveBtn.setOnClickListener { updateExpense() }
+        binding.editBtn.setOnClickListener { viewModel.setEditable(true) }
+        binding.saveBtn.setOnClickListener { saveExpense() }
         binding.deleteBtn.setOnClickListener { confirmDeletion() }
-        binding.backIcon.setOnClickListener{
-            finish()
-        }
+        binding.backIcon.setOnClickListener { finish() }
     }
 
-    private fun toggleEditable(editable: Boolean) {
-        isEditable = editable
+    private fun observeViewModel() {
+        viewModel.isEditable.observe(this, Observer { editable ->
+            binding.dateEdtTxt.isEnabled = editable
+            binding.dateEdtTxt.isFocusableInTouchMode = editable
 
-        Log.d("expenseDetail", "editable: $editable")
-        binding.dateEdtTxt.isEnabled = isEditable
-        binding.dateEdtTxt.isFocusable = isEditable
-        binding.dateEdtTxt.isFocusableInTouchMode = isEditable
+            binding.descEdtTxt.isEnabled = editable
+            binding.descEdtTxt.isFocusableInTouchMode = editable
 
-        binding.descEdtTxt.isEnabled = isEditable
-        binding.descEdtTxt.isFocusable = isEditable
-        binding.descEdtTxt.isFocusableInTouchMode = isEditable
+            binding.amountEdtTxt.isEnabled = editable
+            binding.amountEdtTxt.isFocusableInTouchMode = editable
 
-        binding.amountEdtTxt.isEnabled = isEditable
-        binding.amountEdtTxt.isFocusable = isEditable
-        binding.amountEdtTxt.isFocusableInTouchMode = isEditable
+            binding.editBtn.visibility = if (editable) View.GONE else View.VISIBLE
+            binding.saveBtn.visibility = if (editable) View.VISIBLE else View.GONE
+        })
 
+        viewModel.updateStatus.observe(this, Observer { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        })
 
-
-
-
-        if (editable) {
-            Log.d("expenseDetail",isEditable.toString())
-
-
-            binding.editBtn.visibility = View.GONE
-            binding.saveBtn.visibility = View.VISIBLE
-        } else {
-            Log.d("expenseDetail",editable.toString())
-            binding.dateEdtTxt.isEnabled = isEditable
-            binding.descEdtTxt.isEnabled = isEditable
-            binding.amountEdtTxt.isEnabled = isEditable
-            binding.editBtn.visibility = View.VISIBLE
-            binding.saveBtn.visibility = View.GONE
-        }
+        viewModel.deleteStatus.observe(this, Observer { message ->
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            if (message == "Expense deleted successfully!") finish()
+        })
     }
 
-    private fun updateExpense() {
+    private fun saveExpense() {
         if (expenseId == null) {
             Toast.makeText(this, "Expense not found!", Toast.LENGTH_SHORT).show()
             return
         }
 
         val updatedExpense = Expense(
-            id = expenseId.toString(),
+            id = expenseId!!,
             expenseType = binding.expenseTypeTxt.text.toString(),
             date = binding.dateEdtTxt.text.toString(),
             description = binding.descEdtTxt.text.toString(),
             amount = binding.amountEdtTxt.text.toString()
         )
 
-        Log.d("expenseDetail", "in Update Expense ID: $expenseId")
-        val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
-        databaseReference.child(expenseId!!).setValue(updatedExpense)
-            .addOnSuccessListener {
-                Toast.makeText(this, "Expense updated successfully!", Toast.LENGTH_SHORT).show()
-                toggleEditable(false)
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to update expense!", Toast.LENGTH_SHORT).show()
-            }
+        viewModel.updateExpense(expenseId!!, updatedExpense)
     }
 
     private fun confirmDeletion() {
         AlertDialog.Builder(this)
             .setTitle("Delete Expense")
             .setMessage("Are you sure you want to delete this expense?")
-            .setPositiveButton("Yes") { _, _ -> deleteExpense() }
+            .setPositiveButton("Yes") { _, _ ->
+                expenseId?.let { viewModel.deleteExpense(it) }
+            }
             .setNegativeButton("No", null)
             .show()
     }
-
-    private fun deleteExpense() {
-        if (expenseId == null) {
-            Toast.makeText(this, "Expense not found!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
-        databaseReference.child(expenseId!!).removeValue()
-            .addOnSuccessListener {
-
-                Toast.makeText(this, "Expense deleted successfully!", Toast.LENGTH_SHORT).show()
-                finish() // Close the activity after deletion
-            }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to delete expense!", Toast.LENGTH_SHORT).show()
-            }
-    }
-
-
-
-
-
-
 }
+
+
+
