@@ -6,16 +6,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
 
-
-class ExpenseRepository {
-
-
-
+class ExpenseRepository  @Inject constructor(){
 private val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
-
-
 
 
 
