@@ -6,9 +6,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.model.repository.ExpenseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddNewExpenseViewModel(private val repository: ExpenseRepository): ViewModel() {
+
+@HiltViewModel
+class AddNewExpenseViewModel  @Inject constructor(private val repository: ExpenseRepository): ViewModel() {
 
     private var expenseCount = 0
     private var incomeCount = 0

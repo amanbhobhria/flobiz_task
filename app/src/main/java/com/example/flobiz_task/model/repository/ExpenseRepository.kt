@@ -47,5 +47,20 @@ private val databaseReference = FirebaseDatabase.getInstance().getReference("exp
     }
 
 
+    fun updateExpense(expenseId: String, expense: Expense, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        databaseReference.child(expenseId).setValue(expense)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception.message ?: "Failed to update expense") }
+    }
+
+    fun deleteExpense(expenseId: String, onSuccess: () -> Unit, onFailure: (String) -> Unit) {
+        databaseReference.child(expenseId).removeValue()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { exception -> onFailure(exception.message ?: "Failed to delete expense") }
+    }
+
+
+
+
 
 }

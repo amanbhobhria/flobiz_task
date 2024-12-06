@@ -1,15 +1,12 @@
-package com.example.flobiz_task.view
+package com.example.flobiz_task.view.activity
 
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityMainBinding
+import com.example.flobiz_task.view.adapter.GetExpenseAdapter
 import com.example.flobiz_task.viewmodel.GetExpenseViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,15 +23,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorSearch)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        binding.addNewBtn.setOnClickListener {
-            viewModel.onAddNewExpenseClicked()
-        }
-
 
         setupRecyclerView()
         observeData()
+        setupSearchBar()
+
+        binding.addNewBtn.setOnClickListener {
+            viewModel.onAddNewExpenseClicked()
+        }
 
 
     }
@@ -58,21 +54,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeData() {
 
+        viewModel.filteredExpenseList.observe(this) { expenses ->
+            expenseAdapter.submitList(expenses)
+        }
+
+
         viewModel.navigationEvent.observe(this) { event ->
             event.getContentIfNotHandled()?.let { intent ->
                 startActivity(intent)
             }
         }
 
+    }
 
-        viewModel.expenseList.observe(this) { expenses ->
-            if (expenses.isNotEmpty()) {
-                expenseAdapter.submitList(expenses)
-                Log.d("MainActivity", "Expenses: ${expenses.size}")
-            } else {
-                Toast.makeText(this, "No data found", Toast.LENGTH_SHORT).show()
-            }
+    private fun setupSearchBar() {
+        binding.searchBar.addTextChangedListener { text1 ->
+            val query = text1.toString()
+            viewModel.filterExpenses(query)
+
         }
+
     }
 
 

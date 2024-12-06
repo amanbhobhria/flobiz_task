@@ -9,8 +9,8 @@ import com.example.flobiz_task.MyApp
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.model.repository.ExpenseRepository
 import com.example.flobiz_task.utility.Event
-import com.example.flobiz_task.view.AddNewTransctionActivity
-import com.example.flobiz_task.view.ExpenseDetailActivity
+import com.example.flobiz_task.view.activity.AddNewTransctionActivity
+import com.example.flobiz_task.view.activity.ExpenseDetailActivity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +27,11 @@ class GetExpenseViewModel @Inject constructor(
     private val _navigationEvent = MutableLiveData<Event<Intent>>()
     val navigationEvent: LiveData<Event<Intent>> get() = _navigationEvent
 
+    private val _filteredExpenseList = MutableLiveData<List<Expense>>()
+    val filteredExpenseList: LiveData<List<Expense>> = _filteredExpenseList
+
+
+
     init {
         fetchExpenses()
     }
@@ -35,7 +40,8 @@ class GetExpenseViewModel @Inject constructor(
     fun fetchExpenses() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.getExpenses { expenses ->
-                _expenseList.postValue(expenses)
+               _expenseList.postValue(expenses)
+                _filteredExpenseList.postValue(expenses)
             }
         }
     }
@@ -57,6 +63,18 @@ class GetExpenseViewModel @Inject constructor(
         }
         _navigationEvent.value = Event(intent)
     }
+
+    fun filterExpenses(query: String) {
+        val currentExpenses = _expenseList.value ?: emptyList()
+        val filtered = if (query.isBlank()) {
+            currentExpenses
+        } else {
+            currentExpenses.filter { it.description.contains(query, ignoreCase = true) }
+        }
+        _filteredExpenseList.value = filtered
+    }
+
+
 
 
 }

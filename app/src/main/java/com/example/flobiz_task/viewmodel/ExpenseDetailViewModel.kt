@@ -4,10 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.flobiz_task.model.data.Expense
-import com.google.firebase.database.FirebaseDatabase
+import com.example.flobiz_task.model.repository.ExpenseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ExpenseDetailViewModel : ViewModel() {
-    private val databaseReference = FirebaseDatabase.getInstance().getReference("expenses")
+@HiltViewModel
+class ExpenseDetailViewModel @Inject constructor(private val repository: ExpenseRepository) : ViewModel() {
+
 
     private val _isEditable = MutableLiveData(false)
     val isEditable: LiveData<Boolean> get() = _isEditable
@@ -22,24 +25,34 @@ class ExpenseDetailViewModel : ViewModel() {
         _isEditable.value = editable
     }
 
+
+
     fun updateExpense(expenseId: String, expense: Expense) {
-        databaseReference.child(expenseId).setValue(expense)
-            .addOnSuccessListener {
+        repository.updateExpense(
+            expenseId,
+            expense,
+            onSuccess = {
                 _updateStatus.value = "Expense updated successfully!"
                 setEditable(false)
+            },
+            onFailure = { error ->
+                _updateStatus.value = error
             }
-            .addOnFailureListener {
-                _updateStatus.value = "Failed to update expense!"
-            }
+        )
     }
 
+
+
+
     fun deleteExpense(expenseId: String) {
-        databaseReference.child(expenseId).removeValue()
-            .addOnSuccessListener {
+        repository.deleteExpense(
+            expenseId,
+            onSuccess = {
                 _deleteStatus.value = "Expense deleted successfully!"
+            },
+            onFailure = { error ->
+                _deleteStatus.value = error
             }
-            .addOnFailureListener {
-                _deleteStatus.value = "Failed to delete expense!"
-            }
+        )
     }
 }
