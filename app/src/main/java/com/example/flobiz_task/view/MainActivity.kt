@@ -64,6 +64,7 @@ class MainActivity : AppCompatActivity() {
         expenseAdapter = GetExpenseAdapter{ expense ->
             val intent = Intent(this, ExpenseDetailActivity::class.java).apply {
                 putExtra("expenseId", expense.id)
+                putExtra("expenseType", expense.expenseType)
                 putExtra("date", expense.date)
                 putExtra("description", expense.description)
                 putExtra("amount", expense.amount)
