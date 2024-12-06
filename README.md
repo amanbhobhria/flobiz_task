@@ -23,20 +23,9 @@ An advanced **Expense Tracker** app built using **Kotlin**, featuring **Firebase
 
 ## Screenshots
 
-(Add screenshots here to showcase the app's features)
 
-## Installation
 
-1. Clone the repository:
-   ```bash
-   
-   ```
 
-2. Open the project in Android Studio.
-
-3. Add your Firebase configuration file (`google-services.json`) to the `app` directory.
-
-4. Build and run the app on an emulator or a physical device.
 
 ## Code Architecture
 
@@ -47,24 +36,6 @@ This app follows the **MVVM architecture** for a clean and maintainable codebase
 - **ViewModel:** Handles business logic and provides data to the UI.
 - **Repository:** Manages data sources (Firebase and Room Database).
 
-## Project Structure
-
-```plaintext
-.
-├── data
-│   ├── local
-│   │   ├── Room Database (Entities, DAOs)
-│   ├── remote
-│   │   ├── Firebase Service
-│   ├── repository
-├── ui
-│   ├── viewmodels
-│   ├── activities
-│   ├── fragments
-├── utils
-├── di
-│   ├── ViewModelFactory
-```
 
 ## How It Works
 
