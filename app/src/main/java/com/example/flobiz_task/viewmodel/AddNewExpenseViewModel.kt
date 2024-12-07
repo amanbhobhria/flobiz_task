@@ -6,45 +6,51 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.model.repository.ExpenseRepository
+import com.google.firebase.FirebaseException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
+import java.util.UUID
 import javax.inject.Inject
 
 
 @HiltViewModel
 class AddNewExpenseViewModel  @Inject constructor(private val repository: ExpenseRepository): ViewModel() {
-
-    private var expenseCount = 0
-    private var incomeCount = 0
-
-
-    private val _uploadResult = MutableLiveData<Boolean>()
+     private val _uploadResult = MutableLiveData<Boolean>()
     val uploadResult: LiveData<Boolean> get() = _uploadResult
 
+
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
+
+
+
     fun uploadExpense(expenseType: String, date: String, description: String, amount: String) {
-        val id = if (expenseType.equals("expense", true)) {
-            expenseCount += 1
-            "Expense$expenseCount"
-        } else {
-            incomeCount += 1
-            "Income$incomeCount"
-        }
-        val expense = Expense(id, expenseType, date, description, amount)
-        viewModelScope.launch {
-            val result = repository.uploadExpense(expense)
-            _uploadResult.postValue(result)
-        }
-    }
+        val expense = Expense(
+            id = UUID.randomUUID().toString(),
+            expenseType = expenseType,
+            date = date,
+            description = description,
+            amount = amount
+        )
 
-    fun initializeCounters() {
         viewModelScope.launch {
-            repository.getExpenses { expenses ->
-                expenseCount = expenses.count { it.expenseType.equals("expense", true) }
-                incomeCount = expenses.count { it.expenseType.equals("income", true) }
+            try {
+                val result = repository.uploadExpense(expense)
+                _uploadResult.postValue(result)
+            } catch (e: Exception) {
+                when (e) {
+                    is IOException -> _errorMessage.postValue("Network error. Please try again.")
+                    is FirebaseException -> _errorMessage.postValue("Failed to connect to the database.")
+                    else -> _errorMessage.postValue("An unexpected error occurred: ${e.message}")
+                }
+                _uploadResult.postValue(false)
             }
-        }
 
+        }
     }
+
+
 
 
 

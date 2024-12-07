@@ -27,9 +27,6 @@ class AddNewTransctionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
-        viewModel.initializeCounters()
-
         setupListeners()
         setupRadioGroup()
 
@@ -44,6 +41,10 @@ class AddNewTransctionActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
 
             saveExpense()
+        }
+
+        binding.backIcon.setOnClickListener {
+            finish()
         }
 
     }

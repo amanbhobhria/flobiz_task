@@ -3,9 +3,11 @@ package com.example.flobiz_task.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.model.repository.ExpenseRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,31 +30,45 @@ class ExpenseDetailViewModel @Inject constructor(private val repository: Expense
 
 
     fun updateExpense(expenseId: String, expense: Expense) {
-        repository.updateExpense(
-            expenseId,
-            expense,
-            onSuccess = {
-                _updateStatus.value = "Expense updated successfully!"
-                setEditable(false)
-            },
-            onFailure = { error ->
-                _updateStatus.value = error
+        viewModelScope.launch {
+            try {
+                // Update expense in the repository
+                repository.updateExpense(expense.copy(id = expenseId))
+
+                // Notify the UI that the update was successful
+                _updateStatus.postValue("Expense updated locally! Changes will sync when online.")
+            } catch (e: Exception) {
+                // Handle any errors during the update
+                _updateStatus.postValue("Error updating expense: ${e.message}")
             }
-        )
+        }
     }
+
+
+
+
+
 
 
 
 
     fun deleteExpense(expenseId: String) {
-        repository.deleteExpense(
-            expenseId,
-            onSuccess = {
-                _deleteStatus.value = "Expense deleted successfully!"
-            },
-            onFailure = { error ->
-                _deleteStatus.value = error
+        viewModelScope.launch {
+            try {
+                // Attempt to delete the expense via the repository
+                repository.deleteExpense(expenseId)
+
+                // Notify the UI of the successful deletion (local deletion at minimum)
+                _deleteStatus.postValue("Expense deleted locally! Changes will sync when online.")
+            } catch (e: Exception) {
+                // Handle any errors during the deletion
+                _deleteStatus.postValue("Error deleting expense: ${e.message}")
             }
-        )
+        }
     }
+
+
+
+
+
 }
