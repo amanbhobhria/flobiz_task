@@ -1,26 +1,25 @@
-package com.example.flobiz_task.view
+package com.example.flobiz_task.view.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityAddNewTransctionBinding
-import com.example.flobiz_task.model.data.Expense
-import com.example.flobiz_task.model.repository.ExpenseRepository
 import com.example.flobiz_task.viewmodel.AddNewExpenseViewModel
-import com.example.flobiz_task.viewmodel.ExpenseViewModelFactory
 import com.google.android.material.datepicker.MaterialDatePicker
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+
+@AndroidEntryPoint
 class AddNewTransctionActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddNewTransctionBinding
-    private lateinit var viewModel: AddNewExpenseViewModel
+    private val viewModel: AddNewExpenseViewModel by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,20 +27,6 @@ class AddNewTransctionActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorSearch)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-
-
-
-        viewModel = ViewModelProvider(this, ExpenseViewModelFactory(ExpenseRepository())).get(
-            AddNewExpenseViewModel::class.java
-        )
-
-        viewModel.initializeCounters()
-
-
-
-        // Setup listeners and observers
         setupListeners()
         setupRadioGroup()
 
@@ -56,6 +41,10 @@ class AddNewTransctionActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener {
 
             saveExpense()
+        }
+
+        binding.backIcon.setOnClickListener {
+            finish()
         }
 
     }
@@ -78,7 +67,7 @@ class AddNewTransctionActivity : AppCompatActivity() {
 
 
     private fun saveExpense() {
-        // Fetch data from binding
+        // Retrieve input values
         val expenseType = if (binding.radioExpense.isChecked) "Expense" else "Income"
         val date = binding.editTextDate.text.toString().trim()
         val description = binding.descEdtTxt.text.toString().trim()

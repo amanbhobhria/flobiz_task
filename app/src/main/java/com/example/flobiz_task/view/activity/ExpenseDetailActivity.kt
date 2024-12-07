@@ -1,4 +1,4 @@
-package com.example.flobiz_task.view
+package com.example.flobiz_task.view.activity
 
 
 
@@ -8,13 +8,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import com.example.flobiz_task.R
 import com.example.flobiz_task.databinding.ActivityExpenseDetailBinding
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.viewmodel.ExpenseDetailViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ExpenseDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityExpenseDetailBinding
     private val viewModel: ExpenseDetailViewModel by viewModels()
@@ -26,15 +26,30 @@ class ExpenseDetailActivity : AppCompatActivity() {
         binding = ActivityExpenseDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        window.statusBarColor = ContextCompat.getColor(this, R.color.colorSearch)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
-        // Retrieve passed expense details from intent
+
+        retrieveData()
+
+        observeViewModel()
+
+
+        // Set click listeners
+        binding.editBtn.setOnClickListener { viewModel.setEditable(true) }
+        binding.saveBtn.setOnClickListener { saveExpense() }
+        binding.deleteBtn.setOnClickListener { confirmDeletion() }
+        binding.backIcon.setOnClickListener { finish() }
+
+
+
+    }
+
+    private fun retrieveData() {
         expenseId = intent.getStringExtra("expenseId")
         val date = intent.getStringExtra("date") ?: ""
         val expenseType = intent.getStringExtra("expenseType") ?: ""
         val description = intent.getStringExtra("description") ?: ""
         val amount = intent.getStringExtra("amount") ?: ""
+
 
         // Set initial data
         binding.expenseTypeTxt.text = expenseType
@@ -42,14 +57,6 @@ class ExpenseDetailActivity : AppCompatActivity() {
         binding.descEdtTxt.setText(description)
         binding.amountEdtTxt.setText(amount)
 
-        // Observe ViewModel state
-        observeViewModel()
-
-        // Set up button listeners
-        binding.editBtn.setOnClickListener { viewModel.setEditable(true) }
-        binding.saveBtn.setOnClickListener { saveExpense() }
-        binding.deleteBtn.setOnClickListener { confirmDeletion() }
-        binding.backIcon.setOnClickListener { finish() }
     }
 
     private fun observeViewModel() {

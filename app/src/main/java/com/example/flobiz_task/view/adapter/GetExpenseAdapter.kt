@@ -1,4 +1,4 @@
-package com.example.flobiz_task.view
+package com.example.flobiz_task.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
