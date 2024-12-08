@@ -24,6 +24,19 @@ An advanced **Expense Tracker** app built using **Kotlin**, featuring **Firebase
 ## Screenshots
 
 
+![Dashboard](https://github.com/user-attachments/assets/24c34469-84ef-405c-a4c2-227f430d00e8)
+![AddNewExpense](https://github.com/user-attachments/assets/a5f537b8-405f-411c-854c-294864ea4b52)
+![ExpenseDetail](https://github.com/user-attachments/assets/be556315-695c-4028-bbec-c1d5ce0fd462)
+![UpdateDeleteExoense](https://github.com/user-attachments/assets/b5030214-441b-4659-8b3a-14a83d726e28)
+![CalenderDate](https://github.com/user-attachments/assets/d8900e1d-41a1-4748-bb5a-a46e81ddb008)
+![SearchExpense](https://github.com/user-attachments/assets/f9577f24-748e-4e77-b32f-a7ce03c2b84f)
+
+
+
+
+
+
+
 
 
 
