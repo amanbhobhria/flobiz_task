@@ -141,6 +141,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/descLyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -220,10 +221,8 @@
                     android:background="@color/white"
                     android:enabled="false"
                     android:focusable="false"
-                    android:textColorHint="@color/textColorPrimary"
                     android:textColor="@color/textColorPrimary"
-                    android:focusableInTouchMode="false"
-                    android:hint="10000.0"
+                    android:hint="amount"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
