@@ -34,7 +34,7 @@ class AddNewTransctionActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        binding.calenderBtn.setOnClickListener {
+        binding.dateLyt.setOnClickListener {
             showDatePicker()
         }
 
@@ -46,6 +46,9 @@ class AddNewTransctionActivity : AppCompatActivity() {
         binding.backIcon.setOnClickListener {
             finish()
         }
+
+        binding.descLyt.setOnClickListener{binding.descEdtTxt.requestFocus()}
+        binding.totalAmountLyt.setOnClickListener{binding.amountEdtTxt.requestFocus()}
 
     }
 

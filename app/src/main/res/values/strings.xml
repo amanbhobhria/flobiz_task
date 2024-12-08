@@ -8,6 +8,6 @@
     <string name="record_expense">Record Expense</string>
     <string name="expense">Expense</string>
     <string name="income">Income</string>
-    <string name="electricity_bill">Electricity Bill</string>
+    <string name="electricity_bill">eg Electricity Bill</string>
     <string name="save">Save</string>
 </resources>
