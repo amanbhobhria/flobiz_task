@@ -112,6 +112,7 @@
 
 
         <RelativeLayout
+            android:id="@+id/dateLyt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_background"
@@ -149,6 +150,7 @@
 
 
     <LinearLayout
+        android:id="@+id/descLyt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -200,6 +202,7 @@
 
 
     <LinearLayout
+        android:id="@+id/totalAmountLyt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"

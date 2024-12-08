@@ -36,7 +36,8 @@ class ExpenseDetailViewModel @Inject constructor(private val repository: Expense
                 repository.updateExpense(expense.copy(id = expenseId))
 
                 // Notify the UI that the update was successful
-                _updateStatus.postValue("Expense updated locally! Changes will sync when online.")
+                _updateStatus.postValue("Expense updated successfully!")
+                setEditable(false)
             } catch (e: Exception) {
                 // Handle any errors during the update
                 _updateStatus.postValue("Error updating expense: ${e.message}")

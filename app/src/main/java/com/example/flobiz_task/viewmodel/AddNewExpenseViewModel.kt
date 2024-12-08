@@ -1,15 +1,14 @@
 package com.example.flobiz_task.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flobiz_task.model.data.Expense
 import com.example.flobiz_task.model.repository.ExpenseRepository
-import com.google.firebase.FirebaseException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.io.IOException
 import java.util.UUID
 import javax.inject.Inject
 
@@ -38,12 +37,10 @@ class AddNewExpenseViewModel  @Inject constructor(private val repository: Expens
             try {
                 val result = repository.uploadExpense(expense)
                 _uploadResult.postValue(result)
+                Log.d("AddNewExpenseViewModel", "Upload result: $result")
             } catch (e: Exception) {
-                when (e) {
-                    is IOException -> _errorMessage.postValue("Network error. Please try again.")
-                    is FirebaseException -> _errorMessage.postValue("Failed to connect to the database.")
-                    else -> _errorMessage.postValue("An unexpected error occurred: ${e.message}")
-                }
+                _errorMessage.postValue("An unexpected error occurred: ${e.message}")
+                Log.e("AddNewExpenseViewModel", "Error uploading expense: ${e.message}")
                 _uploadResult.postValue(false)
             }
 
